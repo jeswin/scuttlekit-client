@@ -3,20 +3,26 @@ import { IAppSettings } from "./types/basic";
 
 let initialized = false;
 
+/*
+  This function should be called once the app loads.
+*/
 export async function init(settings: IAppSettings) {
   const params = new URLSearchParams(window.location.search);
   if (params.has("scuttlekitredirect")) {
-    handleRegistrationRedirect(settings, params);
+    await handleRegistrationRedirect(settings, params);
   } else {
-    doInit(settings);
+    await doInit(settings);
   }
 }
 
-async function handleRegistrationRedirect(settings: IAppSettings, params: URLSearchParams) {
+async function handleRegistrationRedirect(
+  settings: IAppSettings,
+  params: URLSearchParams
+) {
   const status = params.get("status");
-  
+
   if (status === "success") {
-    const token = readTokenWithEphemeralKey();
+    const token = readTokenWithSingleUseKey();
     localStorage.setItem(`${settings.name}-accesstoken`, token);
   } else if (status === "failure") {
     const reason = params.get("reason");
@@ -41,14 +47,16 @@ async function doInit(settings: IAppSettings) {
   }
 }
 
+async function register(settings: IAppSettings) {
+  
+}
+
 export async function getService(name: string) {
   if (initialized) {
     return;
   }
 }
 
-function readTokenWithEphemeralKey() {
+function readTokenWithSingleUseKey() {
   return "";
 }
-
-async function register(settings: IAppSettings) {}
